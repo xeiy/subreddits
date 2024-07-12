@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSFW Subreddits List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <style>
+    body { 
+        padding-top: 20px; 
+        background-color: #f5f7fa;
+    }
+
+    .navbar { 
+        background-color: #ffffff; 
+        box-shadow: 0 2px 4px rgba(0,0,0,.05);
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,.05);
+    }
+
+    .table-container {
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,.05);
+    }
+    #subredditTable {
+    color: #4a5568;
+    }
+
+
+        /* Ensure text is visible in all cells */
+    #subredditTable tbody tr td {
+        color: #333333;
+    }
+    .table {
+        color: #4a5568;
+    }
+
+    .btn-primary {
+        background-color: #4299e1;
+        border-color: #4299e1;
+    }
+
+    .btn-primary:hover {
+        background-color: #3182ce;
+        border-color: #3182ce;
+    }
+
+    /* Updated badge colors */
+    .badge {
+        font-size: 0.85em;
+        font-weight: 500;
+        padding: 0.35em 0.65em;
+    }
+
+    /* Verification badges */
+    .badge-verification-no { background-color: #feb2b2; color: #742a2a; }
+    .badge-verification-required { background-color: #9ae6b4; color: #22543d; }
+    .badge-verification-optional { background-color: #faf089; color: #744210; }
+
+    /* Promotion badges */
+    .badge-promotion-allowed { background-color: #90cdf4; color: #2a4365; }
+    .badge-promotion-profile { background-color: #a3bffa; color: #3c366b; }
+    .badge-promotion-comment { background-color: #e9d8fd; color: #44337a; }
+    .badge-promotion-not-allowed { background-color: #fed7d7; color: #742a2a; }
+    .badge-promotion-not-mentioned { background-color: #e2e8f0; color: #2d3748; }
+
+    /* Watermark badges */
+    .badge-watermark-allowed { background-color: #90cdf4; color: #2a4365; }
+    .badge-watermark-username { background-color: #a3bffa; color: #3c366b; }
+    .badge-watermark-not-mentioned { background-color: #e2e8f0; color: #2d3748; }
+    .badge-watermark-not-allowed { background-color: #fed7d7; color: #742a2a; }
+
+    .badge-secondary {
+    background-color: #e9ecef;
+    color: #495057;
+    }
+
+    /* Form and select styles */
+    .form-select, .form-control {
+        border-color: #e2e8f0;
+    }
+
+    .select2-container--bootstrap-5 .select2-selection {
+        border-color: #e2e8f0;
+    }
+
+    .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice {
+        background-color: #edf2f7;
+        border-color: #e2e8f0;
+        color: #4a5568;
+    }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">NSFW Subreddits</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link active" href="index.html">Subreddits</a>
+                <a class="nav-link" href="ratings.html">Ratings</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h1 class="card-title">NSFW Subreddits List</h1>
+                <p class="lead">Welcome to the NSFW Subreddits List! This comprehensive resource is designed to help you discover and navigate various NSFW subreddits. You can filter subreddits by their verification requirements, promotion policies, and watermark rules. Use the dropdown filters below to refine your search. Click on "View Details" for more information about each subreddit.</p>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Filters</h5>
+                <div class="row filters">
+                    <div class="col-md-4 mb-3">
+                        <label for="verificationFilter" class="form-label">Verification</label>
+                        <select id="verificationFilter" class="form-select" multiple="multiple">
+                            <option value="No">No</option>
+                            <option value="Required">Required</option>
+                            <option value="Optional">Optional</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="promotionFilter" class="form-label">Promotion</label>
+                        <select id="promotionFilter" class="form-select" multiple="multiple">
+                            <option value="Allowed">Allowed</option>
+                            <option value="Profile">Profile</option>
+                            <option value="Comment">Comment</option>
+                            <option value="Not Allowed">Not Allowed</option>
+                            <option value="Not Mentioned">Not Mentioned</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="watermarkFilter" class="form-label">Watermark</label>
+                        <select id="watermarkFilter" class="form-select" multiple="multiple">
+                            <option value="Allowed">Allowed</option>
+                            <option value="Username">Username</option>
+                            <option value="Not Mentioned">Not Mentioned</option>
+                            <option value="Not Allowed">Not Allowed</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="subredditTable" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Subscribers</th>
+                        <th>Verification</th>
+                        <th>Promotion</th>
+                        <th>Watermark</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailsModalLabel">Subreddit Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Content will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Color mapping for badges
+        const colorMap = {
+            verification: {
+                "No": "badge-verification-no",
+                "Required": "badge-verification-required",
+                "Optional": "badge-verification-optional"
+            },
+            promotion: {
+                "Allowed": "badge-promotion-allowed",
+                "Profile": "badge-promotion-profile",
+                "Comment": "badge-promotion-comment",
+                "Not Allowed": "badge-promotion-not-allowed",
+                "Not Mentioned": "badge-promotion-not-mentioned"
+            },
+            watermark: {
+                "Allowed": "badge-watermark-allowed",
+                "Username": "badge-watermark-username",
+                "Not Mentioned": "badge-watermark-not-mentioned",
+                "Not Allowed": "badge-watermark-not-allowed"
+            }
+        };
+
+        $(document).ready(function() {
+            let table;
+
+            // Initialize Select2 for multi-select dropdowns
+            $('.form-select').select2({
+                theme: 'bootstrap-5',
+                width: 'style',
+                placeholder: 'Select options',
+                allowClear: true
+            });
+
+            // Load JSON data
+            $.getJSON('data.json', function(jsonData) {
+                table = $('#subredditTable').DataTable({
+                    data: jsonData.data,
+                    columns: [
+                        {   data: 'name',
+                            render: function(data, type, row) {
+                                // Render as a link to the appropriate subreddit, https://reddit.com/r/{subreddit} using the appropriate bootstrap element, underlined and in blueish gray
+                                return type === 'display' ? `<a href="https://reddit.com/r/${data}" style="color: #4299e1; text-decoration: underline;">${data}</a>` : data;
+                            }
+                        },
+                        { 
+                            data: 'subscribers',
+                            render: function(data, type, row) {
+                                return type === 'display' ? parseInt(data).toLocaleString() : parseInt(data);
+                            }
+                        },
+                        {
+                            data: 'verification',
+                            render: function(data, type, row) {
+                                return type === 'display' ? 
+                                    `<span class="badge ${colorMap.verification[data] || 'badge-secondary'}">${data}</span>` : data;
+                            }
+                        },
+                        {
+                            data: 'promotion',
+                            render: function(data, type, row) {
+                                return type === 'display' ? 
+                                    `<span class="badge ${colorMap.promotion[data] || 'badge-secondary'}">${data}</span>` : data;
+                            }
+                        },
+                        {
+                            data: 'watermark',
+                            render: function(data, type, row) {
+                                return type === 'display' ? 
+                                    `<span class="badge ${colorMap.watermark[data] || 'badge-secondary'}">${data}</span>` : data;
+                            }
+                        },
+                        {
+                            data: null,
+                            render: function(data, type, row) {
+                                return '<button class="btn btn-primary btn-sm view-details">View Details</button>';
+                            }
+                        }
+                    ],
+                    pageLength: 25,
+                    lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
+                    deferRender: true,
+                    scrollY: '60vh',
+                    scroller: true,
+                    dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
+                    order: [[1, 'desc']] // Sort by subscribers (column index 1) in descending order
+                });
+
+                // Custom filtering function
+                $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                    let verification = $('#verificationFilter').val();
+                    let promotion = $('#promotionFilter').val();
+                    let watermark = $('#watermarkFilter').val();
+
+                    // If no filters are selected, show all data
+                    if (verification.length === 0 && promotion.length === 0 && watermark.length === 0) {
+                        return true;
+                    }
+
+                    // Check if the row matches the selected filters
+                    if ((verification.length === 0 || verification.includes(data[2])) &&
+                        (promotion.length === 0 || promotion.includes(data[3])) &&
+                        (watermark.length === 0 || watermark.includes(data[4]))) {
+                        return true;
+                    }
+                    return false;
+                });
+
+                // Event listener for filter changes
+                $('.filters select').on('change', function() {
+                    table.draw();
+                });
+
+                // Event listener for "View Details" button
+// Event listener for "View Details" button
+$('#subredditTable').on('click', '.view-details', function() {
+    let data = table.row($(this).parents('tr')).data();
+    let postRequirementsPill = data.postrequirements ? 
+    `<span class="badge bg-danger bg-opacity-75 mb-2" style="font-size: 0.8rem; font-weight: normal;">Post Requirements</span>` : '';
+
+    //Remove any list formatting from the description (<ul>, <ol>, <li>). Replace with |
+    data.description = data.description.replace(/<\/?ul>/g, '').replace(/<\/?ol>/g, '').replace(/<\/?li>/g, ' | ');
+
+    let modalContent = `
+        <div style="padding: 0 30px;">
+            <h1 class="mb-3 fw-bold" style="color: #2c3e50; font-size: 2rem;">${data.name}</h1>
+            <p class="mb-2" style="color: #34495e; font-size: 1.25rem;">${data.title}</p>
+            ${postRequirementsPill}
+            <div class="mb-4" style="color: #7f8c8d; font-size: 1rem;">
+                ${data.description}
+            </div>
+            <div class="accordion" id="subredditAccordion" style="border: none; border-radius: 0.5rem; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div class="accordion-item" style="border: none;">
+                    <h2 class="accordion-header" id="rulesHeader">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#rulesCollapse" aria-expanded="true" aria-controls="rulesCollapse" style="background-color: #4299e1; color: #fff;">
+                            Rules
+                        </button>
+                    </h2>
+                    <div id="rulesCollapse" class="accordion-collapse collapse show" aria-labelledby="rulesHeader" data-bs-parent="#subredditAccordion">
+                        <div class="accordion-body" style="background-color: #f7fbfd;">
+                            ${formatRules(data.rules)}
+                        </div>
+                    </div>
+                </div>
+                ${data.postrequirements ? `
+                <div class="accordion-item" style="border: none;">
+                    <h2 class="accordion-header" id="postRequirementsHeader">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#postRequirementsCollapse" aria-expanded="false" aria-controls="postRequirementsCollapse" style="background-color: #4299e1; color: #fff;">
+                            Post Requirements
+                        </button>
+                    </h2>
+                    <div id="postRequirementsCollapse" class="accordion-collapse collapse" aria-labelledby="postRequirementsHeader" data-bs-parent="#subredditAccordion">
+                        <div class="accordion-body" style="background-color: #f7fbfd;">
+                            ${formatRules(data.postrequirements)}
+                        </div>
+                    </div>
+                </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+    $('.modal-body').html(modalContent);
+    // Replace markdown-style bold in text "**{example}**" with HTML bold "<strong>{example}</strong>"
+    $('.modal-body').html($('.modal-body').html().replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'));
+    var myModal = new bootstrap.Modal(document.getElementById('detailsModal'));
+    myModal.show();
+});
+
+// Helper function to format rules and post requirements
+function formatRules(content) {
+    // Parse the HTML content
+    let parser = new DOMParser();
+    let doc = parser.parseFromString(content, 'text/html');
+    
+    // Find all top-level list items
+    let listItems = doc.body.querySelectorAll(':scope > ul > li, :scope > ol > li');
+    
+    if (listItems.length === 0) {
+        // If no list items found, split by bullet points or numbers
+        content = content.replace(/•/g, '•\n');
+        content = content.replace(/(\d+\.)/g, '\n$1');
+        let lines = content.split('\n').filter(line => line.trim() !== '');
+        
+        listItems = lines.map(line => {
+            let li = document.createElement('li');
+            li.innerHTML = line.trim();
+            return li;
+        });
+    }
+    
+    let formattedContent = '<div class="list-group">';
+    
+    listItems.forEach((item, index) => {
+        let title = '';
+        let body = '';
+        
+        if (item.querySelector('strong')) {
+            title = item.querySelector('strong').innerHTML.trim();
+            body = item.innerHTML.replace(item.querySelector('strong').outerHTML, '').trim();
+        } else {
+            let content = item.innerHTML.trim();
+            let match = content.match(/^([^:]+):(.*)/);
+            if (match) {
+                title = match[1].trim();
+                body = match[2].trim();
+            } else {
+                title = `Rule ${index + 1}`;
+                body = content;
+            }
+        }
+        
+        // Remove any leading bullet points or numbers from the body
+        body = body.replace(/^(•|\d+\.)\s*/, '');
+        
+        // Convert markdown-style bold to HTML bold
+        body = body.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+
+        // Clean up the title
+        title = title.replace(/^RULE\s*#?\d*\s*-?\s*/i, '').replace(/[:]/g, '').trim();
+
+
+
+        // Check if the body contains a list
+        const containsList = /<[uo]l>/.test(body);
+        
+        formattedContent += `
+        <div class="list-group-item" style="background-color: #f7fbfd; border: 1px solid #bdc3c7; margin-bottom: 0.5rem; border-radius: 0.25rem;">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1" style="color: #2c3e50; font-size: 1.1rem;">${title}</h5>
+            </div>
+            <div style="color: #7f8c8d; font-size: 0.95rem;">
+                ${containsList ? body : `<p>${body}</p>`}
+            </div>
+        </div>
+    `;
+    });
+    formattedContent += '</div>';
+    
+    return formattedContent;
+}
+
+
+            });
+        });
+    </script>
+</body>
+</html>
